@@ -1,13 +1,6 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
 import {
+  Image,
   SafeAreaView,
   StyleSheet,
   ScrollView,
@@ -16,59 +9,43 @@ import {
   StatusBar,
 } from 'react-native';
 import codePush from 'react-native-code-push';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
+import {leo, brain, bocce} from './src/data';
+import CodePush from 'react-native-code-push';
 class App extends Component {
+  componentWillMount() {
+    CodePush.disallowRestart();
+  }
+  componentDidMount() {
+    CodePush.allowRestart();
+    CodePush.sync({
+      installMode: CodePush.InstallMode.IMMEDIATE,
+      updateDialog: false,
+    });
+  }
+  codePushDownloadDidProgress(progress) {
+    console.log(
+      progress.receivedBytes + ' of ' + progress.totalBytes + ' received.',
+    );
+  }
   render() {
+    const current = brain;
     return (
       <>
         <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            {/* <Header /> */}
-            {global.HermesInternal == null ? null : (
-              <View style={styles.engine}>
-                <Text style={styles.footer}>Engine: Hermes</Text>
+        <SafeAreaView style={styles.safeAreaView}>
+          <View style={styles.body}>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>{current.title}</Text>
+              <View style={styles.imageContainer}>
+                <Image
+                  style={styles.image}
+                  source={current.image}
+                  resizeMode={'stretch'}
+                />
               </View>
-            )}
-            <View style={styles.body}>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Step One</Text>
-                <Text style={styles.sectionDescription}>
-                  Edit <Text style={styles.highlight}>App.js</Text> to change
-                  this screen and then come back to see your edits.
-                </Text>
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>See Your Changes</Text>
-                <Text style={styles.sectionDescription}>
-                  <ReloadInstructions />
-                </Text>
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Debug</Text>
-                <Text style={styles.sectionDescription}>
-                  <DebugInstructions />
-                </Text>
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Learn More</Text>
-                <Text style={styles.sectionDescription}>
-                  Read the docs to discover what to do next:
-                </Text>
-              </View>
-              <LearnMoreLinks />
+              <Text style={styles.subtitle}>{current.subtitle}</Text>
             </View>
-          </ScrollView>
+          </View>
         </SafeAreaView>
       </>
     );
@@ -76,43 +53,39 @@ class App extends Component {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  safeAreaView: {
+    backgroundColor: 'whitesmoke',
   },
   body: {
-    backgroundColor: Colors.white,
+    alignItems: 'center',
+    backgroundColor: 'whitesmoke',
+    height: '100%',
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    height: 400,
+    width: '100%',
   },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
   },
   sectionTitle: {
-    fontSize: 24,
+    textAlign: 'center',
+    fontSize: 48,
     fontWeight: '600',
-    color: Colors.black,
+    color: 'navy',
   },
-  sectionDescription: {
+  subtitle: {
     marginTop: 8,
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+    color: 'dodgerblue',
   },
 });
 
-App = codePush(App);
+App = codePush({checkFrequency: codePush.CheckFrequency.ON_APP_RESUME})(App);
 export default App;
