@@ -3,7 +3,6 @@ import {
   Image,
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
@@ -16,11 +15,7 @@ class App extends Component {
     CodePush.disallowRestart();
   }
   componentDidMount() {
-    CodePush.allowRestart();
-    CodePush.sync({
-      installMode: CodePush.InstallMode.IMMEDIATE,
-      updateDialog: false,
-    });
+    codePush.allowRestart();
   }
   codePushDownloadDidProgress(progress) {
     console.log(
@@ -28,7 +23,7 @@ class App extends Component {
     );
   }
   render() {
-    const current = brain;
+    const current = leo;
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -75,17 +70,23 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     textAlign: 'center',
-    fontSize: 48,
+    fontSize: 32,
     fontWeight: '600',
     color: 'navy',
   },
   subtitle: {
     marginTop: 8,
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '400',
     color: 'dodgerblue',
   },
 });
 
-App = codePush({checkFrequency: codePush.CheckFrequency.ON_APP_RESUME})(App);
+const codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.IMMEDIATE,
+  mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
+};
+
+App = codePush(codePushOptions)(App);
 export default App;
